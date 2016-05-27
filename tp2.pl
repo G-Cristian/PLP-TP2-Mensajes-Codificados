@@ -26,3 +26,12 @@ ej(1, [rombo, cuadrado, espacio, perro, cuadrado, sol, cuadrado]).
 ej(2, [rombo, cuadrado, espacio, perro, triangulo, sol, cuadrado]).
 
 ej(3, [rombo, cuadrado, perro, cuadrado, sol, luna, triangulo, estrella, arbol, gato]).
+
+
+%diccionario_lista(S)
+
+%juntar_con(L,J,R)
+
+%palabras(S, P)
+
+%asignar_var(A, MI, MF)
