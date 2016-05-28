@@ -28,10 +28,21 @@ ej(2, [rombo, cuadrado, espacio, perro, triangulo, sol, cuadrado]).
 ej(3, [rombo, cuadrado, perro, cuadrado, sol, luna, triangulo, estrella, arbol, gato]).
 
 
-%diccionario_lista(S)
+% Ejercicio 1
+% S es valido solo si es una codificacion de un predicado del diccionario.
 
-%juntar_con(L,J,R)
+diccionario_lista(S) :- diccionario(P), string_codes(P,S).
 
-%palabras(S, P)
+% Ejercicio 2
+% El predicado es valido cuando tiene un solo elemento y ese elemento es el resultante.
+% O el elemento resultante es la union del primer elemento de la lista, mas el J, mas el resultado 
+% del predicado valido con un elemento menos.
+
+juntar_con(L,J,V) :- length(L,1), member(V,L), not(member(J,V)).
+juntar_con([X|L1],J,R) :- append(X,[J],XJ),append(XJ,R2,R), juntar_con(L1,J,R2).  
+
+% Ejercicio 3
+
+palabras(S,P) :- juntar_con(P,'espacio',S).
 
 %asignar_var(A, MI, MF)
