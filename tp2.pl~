@@ -41,7 +41,7 @@ diccionario_lista(S) :- diccionario(P), string_codes(P,S).
 %juntar_con(?L,+J,?V)
 %L y V no pueden ser libres al mismo tiempo.
 juntar_con(L,J,V) :- length(L,1), member(V,L), not(member(J,V)).
-juntar_con([X|L1],J,R) :- var(R), nonvar(X), append(X,[J],XJ),append(XJ,R2,R),juntar_con(L1,J,R2).
+juntar_con([X|L1],J,R) :- var(R), append(X,[J],XJ),append(XJ,R2,R),juntar_con(L1,J,R2).
 juntar_con([X|L1],J,R):-nonvar(R), append(XJ,R2,R),append(X,[J],XJ),juntar_con(L1,J,R2),not((member(J,X))).
 
 
