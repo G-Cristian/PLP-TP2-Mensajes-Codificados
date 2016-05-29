@@ -49,7 +49,17 @@ juntar_con([X|L1],J,R):-nonvar(R), append(XJ,R2,R),append(X,[J],XJ),juntar_con(L
 
 palabras(S,P) :- juntar_con(P,'espacio',S).
 
+
+
+%Ejercicio 4
+
 %asignar_var(A, MI, MF)
+asignar_var(A,[],[(A,X)]).
+asignar_var(A,MI,MI):- claves(MI,C), member(A,C),length(MI,N), N>0.
+asignar_var(A,MI,[(A,X)|MI]):- claves(MI,C), not(member(A,C)),length(MI,N), N>0.
+
+claves([],[]).
+claves([(A,N)|XS],[A|R]):- claves(XS,R).
 
 
 
