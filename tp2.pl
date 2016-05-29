@@ -61,11 +61,28 @@ asignar_var(A,MI,[(A,X)|MI]):- claves(MI,C), not(member(A,C)),length(MI,N), N>0.
 claves([],[]).
 claves([(A,N)|XS],[A|R]):- claves(XS,R).
 
+%Ejercicio 5
+%palabras_con_variables(P,V)
 
+palabras_con_variable([],[]).
+palabras_con_variable([X|XS],[R|RS]):- aplanar([X|XS],LP), armarDic(LP,D), reemplazar_palabras_con_variable(D,[X|XS],[R|RS]).
 
+reemplazar_palabras_con_variable(_,[],_).
+reemplazar_palabras_con_variable(D,[X|XS],[R|RS]):-reemplazarVar(D,X,R),
+	reemplazar_palabras_con_variable(D,XS,RS).
 
+aplanar([],[]).
+aplanar([X|XS],RS):- append(X,R,RS),aplanar(XS,R).
 
+armarDic([],[]).
+armarDic([X|XS],RS):- armarDic(XS,R),asignar_var(X,R,RS).
 
+reemplazarVar(D,[],[]).
+reemplazarVar(D,[X|XS],[R|RS]):- dameVar(D,X,R), reemplazarVar(D,XS,RS).
+
+dameVar([],_,_).
+dameVar([(X,A)|XS],Y,A):- X==Y.
+dameVar([(X,A)|XS],Y,R):- X\=Y, dameVar(XS,Y,R).
 
 
 
