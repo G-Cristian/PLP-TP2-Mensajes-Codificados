@@ -95,3 +95,9 @@ dameVar([(X,A)|XS],Y,R):- X\=Y, dameVar(XS,Y,R).
 
 
 
+
+
+
+
+
+
