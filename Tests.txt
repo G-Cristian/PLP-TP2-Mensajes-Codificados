@@ -1,0 +1,43 @@
+4) asignar_var(+A,+Mi,-MF).
+
+asignar_var(rombo,[],M).
+M=[(rombo, _G452)];
+false.
+
+asignar_var(rombo,[(rombo,a)],M).
+M=[(rombo,a)];
+false.
+
+asignar_var(rombo,[],M),asignar_var(cuadrado,M,M2),asignar_var(rombo,M2,M3).
+M=[(rombo, _G1020)],
+M2=M3, M3=[(cuadrado,_G1026),(rombo, _G1020)];
+false.
+
+asignar_var(rombo,[],M),asignar_var(rombo,M,M2),asignar_var(cuadrado,M2,M3),asignar_var(perro,M3,M4),asignar_var(cuadrado,M4,M5).
+M=M2, M2=[(rombo, _G3368)],
+M3=[(cuadrado,_G3377),(rombo, _G3368)],
+M4=M5, M5=[(perro,_G3392),(cuadrado,_G3377),(rombo, _G3368)];
+false.
+
+asignar_var(b,[(c,_),(b,_),(a,_)],MF).
+1-A1<-b, [] != [(c,_),(b,_),(a,_)] MF1<-MF => false
+2-A2<-b, MI2<-[(c,_),(b,_),(a,_)], MF2<-[(c,_),(b,_),(a,_)] => claves(MI2,C2),member(A2,C2),length(MI2,N2), N2>0
+  C2<-[c,b,a] => member(b,[c,b,a]),length(MI2,N2), N2>0 => length(MI2,N2), N2>0
+    N2<-3 => N2>0 => true.
+3-A3<-b, MI3<-[(c,_),(b,_),(a,_)],MF3<-MF => claves(MI3,C3),not(member(A3,C3)),length(MI3,N3), N3>0
+  C3<-[c,b,a] => member(b,[c,b,a]),length(MI3,N3), N3>0 => false.
+
+5)palabras_con_variables(+P,-V)
+
+ej(1, S), palabras(S, P), palabras_con_variables(P, V).
+S = [rombo, cuadrado, espacio, perro, cuadrado, sol, cuadrado],
+P = [[rombo, cuadrado], [perro, cuadrado, sol, cuadrado]],
+V = [[_G5231, _G5177], [_G5204, _G5177, _G5183, _G5177]] ;
+false.
+
+palabras_con_variables([],V).
+V=[].
+
+palabras_con_variables([[rombo,rombo]|[[rombo,cuadrado,rombo]|[[cuadrado,rombo,perro]]]],V).
+V = [[_G6001, _G6001], [_G6001, _G6016, _G6001], [_G6016, _G6001, _G5995]] ;
+false.

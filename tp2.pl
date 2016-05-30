@@ -53,21 +53,22 @@ palabras(S,P) :- juntar_con(P,'espacio',S).
 
 %Ejercicio 4
 
-%asignar_var(A, MI, MF)
+%asignar_var(+A, +MI, -MF)
 asignar_var(A,[],[(A,X)]).
 asignar_var(A,MI,MI):- claves(MI,C), member(A,C),length(MI,N), N>0.
 asignar_var(A,MI,[(A,X)|MI]):- claves(MI,C), not(member(A,C)),length(MI,N), N>0.
 
+%claves(+L,-C)
 claves([],[]).
 claves([(A,N)|XS],[A|R]):- claves(XS,R).
 
 %Ejercicio 5
-%palabras_con_variables(P,V)
+%palabras_con_variables(+P,-V)
 
-palabras_con_variable([],[]).
-palabras_con_variable([X|XS],[R|RS]):- aplanar([X|XS],LP), armarDic(LP,D), reemplazar_palabras_con_variable(D,[X|XS],[R|RS]).
+palabras_con_variables([],[]).
+palabras_con_variables([X|XS],[R|RS]):- aplanar([X|XS],LP), armarDic(LP,D), reemplazar_palabras_con_variable(D,[X|XS],[R|RS]).
 
-reemplazar_palabras_con_variable(_,[],_).
+reemplazar_palabras_con_variable(_,[],[]).
 reemplazar_palabras_con_variable(D,[X|XS],[R|RS]):-reemplazarVar(D,X,R),
 	reemplazar_palabras_con_variable(D,XS,RS).
 
@@ -80,7 +81,9 @@ armarDic([X|XS],RS):- armarDic(XS,R),asignar_var(X,R,RS).
 reemplazarVar(D,[],[]).
 reemplazarVar(D,[X|XS],[R|RS]):- dameVar(D,X,R), reemplazarVar(D,XS,RS).
 
-dameVar([],_,_).
+% quito el siguiente dameVar([],_,_) ya que si llega a ese caso tendría
+% que dar false
+%dameVar([],_,_).
 dameVar([(X,A)|XS],Y,A):- X==Y.
 dameVar([(X,A)|XS],Y,R):- X\=Y, dameVar(XS,Y,R).
 
