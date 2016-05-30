@@ -41,3 +41,43 @@ V=[].
 palabras_con_variables([[rombo,rombo]|[[rombo,cuadrado,rombo]|[[cuadrado,rombo,perro]]]],V).
 V = [[_G6001, _G6001], [_G6001, _G6016, _G6001], [_G6016, _G6001, _G5995]] ;
 false.
+
+6)quitar(?E,+L,-R)
+
+quitar(z,[A,B,A,z],L).
+L = [A, B, A] ;
+false.
+
+quitar(A,[A,B,A,z],L).
+L = [B, z] ;
+false.
+
+quitar(a,[],L).
+L=[].
+
+quitar(A,[],L).
+L=[].
+
+quitar(A,[a,B,c,D],L).
+L = [a, B, c, D].
+
+quitar(b,[a,B,c,D],L).
+L = [a, B, c, D].
+
+7)cant_distintos(+L,-S)
+
+cant_distintos([A,B,A], N).
+N=2;
+false.
+
+cant_distintos([A,A,A], N).
+N=1;
+false.
+
+cant_distintos([a,A,A,B], N).
+N=3;
+false.
+
+cant_distintos([a,A,a,B,B,c,c,A,D,A,A], N).
+N=5;
+false.
