@@ -89,11 +89,10 @@ dameVar([(X,A)|XS],Y,R):- X\=Y, dameVar(XS,Y,R).
 %quitar(E,L,R)
 
 quitar(_, [], []).
-quitar(X, [X|Xs], Y) :- quitar(X, Xs, Y).
-quitar(X, [T|Xs], [T|Y]) :- atomic(T), quitar(X, Xs, Y).
-quitar(X, [T|Xs], [T|Y]) :-  not(var(T)), not(var(X)), string_codes([X],C1),string_codes([T],C2) ,C1\=C2 , quitar(X, Xs, Y).
-quitar(X, [T|Xs], Y) :-  atomic(T), atomic(X),X==T , quitar(X, Xs, Y).
-
+quitar(X, [T|Xs], [T|Y]) :- not(var(T)), X\=T,  quitar(X, Xs, Y).
+quitar(X, [T|Xs], Y) :- not(var(T)), X==T,  quitar(X, Xs, Y).
+quitar(X, [T|Xs], [T|Y]) :- var(T), not(var(X)) ,quitar(X, Xs, Y).
+quitar(X, [T|Xs], Y) :- X==T, var(X), var(T),quitar(X, Xs, Y).
 
 %Ejercicio 7
 cant_distintos([],0).
