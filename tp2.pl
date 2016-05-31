@@ -53,21 +53,22 @@ palabras(S,P) :- juntar_con(P,'espacio',S).
 
 %Ejercicio 4
 
-%asignar_var(A, MI, MF)
+%asignar_var(+A, +MI, -MF)
 asignar_var(A,[],[(A,X)]).
 asignar_var(A,MI,MI):- claves(MI,C), member(A,C),length(MI,N), N>0.
 asignar_var(A,MI,[(A,X)|MI]):- claves(MI,C), not(member(A,C)),length(MI,N), N>0.
 
+%claves(+L,-C)
 claves([],[]).
 claves([(A,N)|XS],[A|R]):- claves(XS,R).
 
 %Ejercicio 5
-%palabras_con_variables(P,V)
+%palabras_con_variables(+P,-V)
 
-palabras_con_variable([],[]).
-palabras_con_variable([X|XS],[R|RS]):- aplanar([X|XS],LP), armarDic(LP,D), reemplazar_palabras_con_variable(D,[X|XS],[R|RS]).
+palabras_con_variables([],[]).
+palabras_con_variables([X|XS],[R|RS]):- aplanar([X|XS],LP), armarDic(LP,D), reemplazar_palabras_con_variable(D,[X|XS],[R|RS]).
 
-reemplazar_palabras_con_variable(_,[],_).
+reemplazar_palabras_con_variable(_,[],[]).
 reemplazar_palabras_con_variable(D,[X|XS],[R|RS]):-reemplazarVar(D,X,R),
 	reemplazar_palabras_con_variable(D,XS,RS).
 
@@ -80,7 +81,9 @@ armarDic([X|XS],RS):- armarDic(XS,R),asignar_var(X,R,RS).
 reemplazarVar(D,[],[]).
 reemplazarVar(D,[X|XS],[R|RS]):- dameVar(D,X,R), reemplazarVar(D,XS,RS).
 
-dameVar([],_,_).
+% quito el siguiente dameVar([],_,_) ya que si llega a ese caso tendría
+% que dar false
+%dameVar([],_,_).
 dameVar([(X,A)|XS],Y,A):- X==Y.
 dameVar([(X,A)|XS],Y,R):- X\=Y, dameVar(XS,Y,R).
 
@@ -88,26 +91,29 @@ dameVar([(X,A)|XS],Y,R):- X\=Y, dameVar(XS,Y,R).
 %Ejercicio 6
 %quitar(E,L,R)
 
-quitar(_, [], []).
-quitar(X, [T|Xs], [T|Y]) :- not(var(T)), X\=T,  quitar(X, Xs, Y).
-quitar(X, [T|Xs], Y) :- not(var(T)), X==T,  quitar(X, Xs, Y).
-quitar(X, [T|Xs], [T|Y]) :- var(T), not(var(X)) ,quitar(X, Xs, Y).
-quitar(X, [T|Xs], Y) :- X==T, var(X), var(T),quitar(X, Xs, Y).
+%quitar(_, [], []).
+%quitar(X, [X|Xs], Y) :- quitar(X, Xs, Y).
+%quitar(X, [T|Xs], [T|Y]) :- atomic(T), quitar(X, Xs, Y).
+% quitar(X, [T|Xs], [T|Y]) :- not(var(T)), not(var(X)),
+% string_codes([X],C1),string_codes([T],C2) ,C1\=C2 , quitar(X, Xs, Y).
+%quitar(X, [T|Xs], Y) :-  atomic(T), atomic(X),X==T , quitar(X, Xs, Y).
+
+%quitar(?E,+L,-R)
+quitar(_,[],[]).
+quitar(E,[X|XS],R):-E==X,quitar(E,XS,R).
+quitar(E,[X|XS],[X|R]):-E\==X,quitar(E,XS,R).
+
 
 %Ejercicio 7
+%cant_distintos([],0).
+% cant_distintos([X|XS],R):- atomic(X), member(X,XS),
+% cant_distintos(XS,R).
+% cant_distintos([X|XS],R):- atomic(X), not(member(X,XS)),
+% cant_distintos(XS,R2), R is R2 + 1 .
+
+%cant_distintos(+L,-S)
 cant_distintos([],0).
-cant_distintos([X|XS],R):- atomic(X), member(X,XS), cant_distintos(XS,R).
-cant_distintos([X|XS],R):- atomic(X), not(member(X,XS)), cant_distintos(XS,R2), R is R2 + 1 .
-
-
-
-
-
-
-
-
-
-
+cant_distintos([X|XS],S):-quitar(X,XS,L),cant_distintos(L,S2),S is S2+1.
 
 
 
