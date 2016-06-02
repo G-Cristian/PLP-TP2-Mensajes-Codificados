@@ -115,9 +115,44 @@ quitar(E,[X|XS],[X|R]):-E\==X,quitar(E,XS,R).
 cant_distintos([],0).
 cant_distintos([X|XS],S):-quitar(X,XS,L),cant_distintos(L,S2),S is S2+1.
 
+%Descifrar(S,M)
+%
+%
+%en p tengo la lista de simbolos, ej[x o |]
+
+descifrar([],_).
+descifrar(S,M):- palabras(S,P), armar_diccionario(P,D), posibles_asignaciones(D,LD), posibles_palabras(P,LD,R), palabras_validas(R,M).
+
+% armar_diccionario(+L, -L) recibe una lista de simbolos, instancia
+% lista de tuplas, simbolo, variable
+
+armar_diccionario([],[]).
+armar_diccionario(X, D):- asignar_variables(X,[],D).
+
+asignar_variables([],_,_).
+asignar_variables([X],Y,YS):- asignar_var(X,Y,YS).
+asignar_variables([X,Y|XS], YS, R):- asignar_var(X,YS,YSS), asignar_variables([Y|XS], YSS, R).
+
+%a partir de una lista de lista de simbolos (palabras);
+% un diccionario de simbolos->variables instancia una lista de
+% asignaciones (una asignacion es una lista de palabras) lista de
+% palabras
+posibles_palabras(_,[],_).
+posibles_palabras(XS,[D|DS],[Y|YS]):-  instanciar_asignaciones(XS,D,Y), posibles_palabras(XS,DS,YS).
+
+
+% instanciar_asignaciones recibe una lista, de lista de simbolos, un
+% diccionario de simbolo->asignacion, instancia el reemplazo de esa
+% asignacion en la lista
+
+instanciar_asignaciones([],_,_).
+instanciar_asignaciones([],_,_).
 
 
 
-
+% devuelve una lista de diccionarios con las posibles asignaciones para
+% cada variable
+%
+posibles_asignaciones([],_).
 
 
