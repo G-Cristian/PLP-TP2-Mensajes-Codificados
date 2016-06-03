@@ -115,9 +115,21 @@ quitar(E,[X|XS],[X|R]):-E\==X,quitar(E,XS,R).
 cant_distintos([],0).
 cant_distintos([X|XS],S):-quitar(X,XS,L),cant_distintos(L,S2),S is S2+1.
 
+%Ejercicio 8
+%descifrar(S,M)
+% Primero armamos la lista con listas de variables libres usasndo
+% 'palabras(S,P), palabras_con_variables(P,V)'. Luego se recorren todas
+% las palabras del dicionario pasadas a codigo ascii usando
+% 'diccionario_lista(D)'. Finalmente se trata de unificar la primera
+% lista de V con la primer palabra de D y si unifican se sigue buscando
+% recursibamente.
 
+descifrar(S,M):-palabras(S,P),palabras_con_variables(P,V),findall(X0,diccionario_lista(X0),D), descifrar_palabras(V,D,M).
 
+descifrar_palabras([],_,[]).
+descifrar_palabras([V|VS],[D|DS],[V|VS]):-unifica(V,[D|DS]),descifrar_palabras(VS,DS,VS).
 
-
+unifica(V,[D|DS]):-V=D.
+unifica(V,[D|DS]):-V\=D,unifica(V,DS).
 
 
