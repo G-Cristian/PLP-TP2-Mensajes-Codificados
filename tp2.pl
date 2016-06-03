@@ -140,19 +140,40 @@ asignar_variables([X,Y|XS], YS, R):- asignar_var(X,YS,YSS), asignar_variables([Y
 posibles_palabras(_,[],_).
 posibles_palabras(XS,[D|DS],[Y|YS]):-  instanciar_asignaciones(XS,D,Y), posibles_palabras(XS,DS,YS).
 
-
 % instanciar_asignaciones recibe una lista, de lista de simbolos, un
 % diccionario de simbolo->asignacion, instancia el reemplazo de esa
 % asignacion en la lista
 
 instanciar_asignaciones([],_,_).
-instanciar_asignaciones([],_,_).
+instanciar_asignaciones([X|XS],D,[Y|YS]):- dame_def(X, D, Y), instanciar_asignaciones(XS,D,YS).
 
+%dame_def(+P,+D,-R)
+%devuelve la definicion de una palabra
+dame_def(_,[],_).
+dame_def(X, [(X,Y)|XS],Y).
+dame_def(X,[(A,B)|XS],Y):- X\==A, dame_def(X,XS,Y).
 
 
 % devuelve una lista de diccionarios con las posibles asignaciones para
 % cada variable
-%
-posibles_asignaciones([],_).
+
+%posibles_asignaciones([],_).
+
+palabras_validas([],_,_).
+palabras_validas(XS,YS):- diccionario_lista_completo(D), bagof(X,todas_palabras_validas(X,D), member(X,XS),YS).
+
+
+diccionario_lista_completo(D):- setof(diccionario(S),true,D).
+
+
+
+
+
+
+
+
+
+
+
 
 
