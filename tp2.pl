@@ -145,3 +145,21 @@ espacios_intercalados([S],[S]).
 espacios_intercalados([S|SS],[S,espacio|MS]):-espacios_intercalados(SS,MS).
 espacios_intercalados([S|SS],[S|MS]):-espacios_intercalados(SS,MS).
 
+
+%mensajes_mas_parejos(S,M)
+% mensajes_mas_parejos(S,M):- descifrar_sin_espacios(S,N1),
+% desviacion_estandar(N1,D1), not(descifar_sin_espacios(S,N2),
+% desviacion_estandar(N2,D2), D2<D1), member(N1,M).
+
+%desviacion_estandar().
+%desviacion_estandar():-
+
+%media_de_longitudes
+
+%cantidad_palabras:
+
+
+
+
+
+
