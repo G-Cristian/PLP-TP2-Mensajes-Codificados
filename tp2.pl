@@ -115,9 +115,23 @@ quitar(E,[X|XS],[X|R]):-E\==X,quitar(E,XS,R).
 cant_distintos([],0).
 cant_distintos([X|XS],S):-quitar(X,XS,L),cant_distintos(L,S2),S is S2+1.
 
+%Ejercicio 8
+%descifrar(+S,?M)
+% Primero armamos la lista con listas de variables libres usasndo
+% 'palabras(S,P), palabras_con_variables(P,V)'. Luego se recorren todas
+% las palabras del dicionario pasadas a codigo ascii usando
+% 'diccionario_lista(D)'. Finalmente se trata de unificar la primera
+% lista de V con la primer palabra de D y si unifican se sigue buscando
+% recursibamente.
 
+descifrar(S,M):-palabras(S,P),palabras_con_variables(P,V),descifrar_palabras(V),juntar_con(V,32,N),simbolos_respetan_letras(S,N),string_codes(M,N).
 
+descifrar_palabras([]).
+descifrar_palabras([V|VS]):-diccionario_lista(D),V=D,descifrar_palabras(VS).
 
+simbolos_respetan_letras([],[]).
+simbolos_respetan_letras([S|SS],[N|NS]):-simbolo_es_misma_letra_siempre(S,N,SS,NS),simbolos_respetan_letras(SS,NS).
 
-
-
+simbolo_es_misma_letra_siempre(_,_,[],[]).
+simbolo_es_misma_letra_siempre(S,L,[S2|SS],[L2|LS]):-S==S2,L==L2,simbolo_es_misma_letra_siempre(S,L,SS,LS).
+simbolo_es_misma_letra_siempre(S,L,[S2|SS],[L2|LS]):-S\==S2,L\==L2,simbolo_es_misma_letra_siempre(S,L,SS,LS).
