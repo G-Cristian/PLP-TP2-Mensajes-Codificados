@@ -135,3 +135,13 @@ simbolos_respetan_letras([S|SS],[N|NS]):-simbolo_es_misma_letra_siempre(S,N,SS,N
 simbolo_es_misma_letra_siempre(_,_,[],[]).
 simbolo_es_misma_letra_siempre(S,L,[S2|SS],[L2|LS]):-S==S2,L==L2,simbolo_es_misma_letra_siempre(S,L,SS,LS).
 simbolo_es_misma_letra_siempre(S,L,[S2|SS],[L2|LS]):-S\==S2,L\==L2,simbolo_es_misma_letra_siempre(S,L,SS,LS).
+
+
+%descifrar_sin_espacios(+S, ?M)
+descifrar_sin_espacios(S, M):-espacios_intercalados(S,N),descifrar(N,M).
+
+%espacios_intercalados(+S,-M)
+espacios_intercalados([S],[S]).
+espacios_intercalados([S|SS],[S,espacio|MS]):-espacios_intercalados(SS,MS).
+espacios_intercalados([S|SS],[S|MS]):-espacios_intercalados(SS,MS).
+
