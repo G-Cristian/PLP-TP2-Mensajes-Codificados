@@ -157,13 +157,18 @@ dame_def(X,[(A,B)|XS],Y):- X\==A, dame_def(X,XS,Y).
 % devuelve una lista de diccionarios con las posibles asignaciones para
 % cada variable
 
-%posibles_asignaciones([],_).
+posibles_asignaciones([],_).
 
-palabras_validas([],_,_).
-palabras_validas(XS,YS):- diccionario_lista_completo(D), bagof(X,todas_palabras_validas(X,D), member(X,XS),YS).
+palabras_validas([],_).
+palabras_validas(XS,YS):- diccionario_lista_completo(D), setof(X,(member(X,XS), todas_palabras_validas(X,D)),YS).
+
+diccionario_lista_completo(D):- setof(X,diccionario_lista(X),D).
+
+todas_palabras_validas([],_).
+todas_palabras_validas([X|XS],YS):- string_codes(X,S), member(S,YS), todas_palabras_validas(XS,YS).
 
 
-diccionario_lista_completo(D):- setof(diccionario(S),true,D).
+
 
 
 
