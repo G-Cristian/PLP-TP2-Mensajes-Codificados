@@ -29,9 +29,6 @@ ej(3, [rombo, cuadrado, perro, cuadrado, sol, luna, triangulo, estrella, arbol, 
 
 tests_ej_8(1, [boca, racing, espacio, newells, boca, velez, boca, independiente, sarmiento, quilmes, racing, river, newells, sanlor, chicago, espacio, rosario, almirante, estudiantes, velez, almirante, independiente, river, estudiantes, boca, chicago]).
 
-tests_ej_9(1, [boca, racing, newells, boca, velez, boca, independiente, sarmiento, quilmes, racing, river, newells, sanlor, chicago, rosario]).
-
-
 % Ejercicio 1
 % S es valido solo si es una codificacion de un predicado del diccionario.
 
@@ -162,8 +159,32 @@ espacios_intercalados([S|SS],[S|MS]):-espacios_intercalados(SS,MS).
 
 %cantidad_palabras:
 
+%mensajes_mas_parejos(+S,-M)
+% mensajes_mas_parejos(S,M):-desviaciones_estandars(S,DES),menor(DES,MDE),
+% descifrar_sin_espacios(S,M), desviacion_estandar(M,MDE).
+
+%desviaciones_estandars(+S,-DES)
+% desviaciones_estandars(S,[DE|DES]):-desviacion_estandar(M,DE),desviaciones_estandars(S,[DE|DES]).
+%
 
 
 
+%desviacion_estandar_string(+M,-DE)
+%M=string
+%DE=float
+desviacion_estandar_string(M,DE):-string_codes(M,N),juntar_con(P,32,N),desviacion_estandar(P,DE).
+
+%desviacion_estandar(+P,-DE)
+%P=[[simbolo/codigo,simbolo/codigo,...],[simbolo/codigo,...],...]
+%DE=float
+desviacion_estandar(P,DE):-media(P,M),sumatoria_cuadrado_diferencias(P,M,SCD), length(P,L), DIVISION is SCD/L, DE = sqrt(DIVISION).
+
+media(P,M):-sumatoria_longitudes(P,SL),length(P,L),M is SL/L.
+
+sumatoria_longitudes([],0).
+sumatoria_longitudes([P|PS],SL):-length(P,LP),sumatoria_longitudes(PS,SLS), SL is LP+SLS.
+
+sumatoria_cuadrado_diferencias([],_,0).
+sumatoria_cuadrado_diferencias([P|PS],M,SCD):-length(P,LP), sumatoria_cuadrado_diferencias(PS,M,SCDS), DIF is LP - M, DIFSQ is DIF*DIF, SCD is DIFSQ + SCDS.
 
 
