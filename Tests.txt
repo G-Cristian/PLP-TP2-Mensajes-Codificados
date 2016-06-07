@@ -1,3 +1,30 @@
+2)juntar_con(?L,?J,?V)
+L y V no pueden ser libres al mismo tiempo.
+Si J está libre, V debe estar definida.
+
+juntar_con([[x],[y]],a,S).
+S = [x, a, y] ;
+false.
+
+juntar_con(S,A,[x,a,y,x,z]).
+S = [[], [a, y], [z]],
+A = x ;
+S = [[x], [y, x, z]],
+A = a ;
+S = [[x, a], [x, z]],
+A = y ;
+S = [[x, a, y, x], []],
+A = z ;
+false.
+
+juntar_con(S,a,[x,a,y,x,a,z]).
+S = [[x], [y, x], [z]] ;
+false.
+
+juntar_con([[x],[y],[z]],a,[x,a,y,a,z]).
+true ;
+false.
+
 4) asignar_var(+A,+Mi,-MF).
 
 asignar_var(rombo,[],M).

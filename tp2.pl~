@@ -30,8 +30,12 @@ ej(3, [rombo, cuadrado, perro, cuadrado, sol, luna, triangulo, estrella, arbol, 
 tests_ej_8(1, [boca, racing, espacio, newells, boca, velez, boca, independiente, sarmiento, quilmes, racing, river, newells, sanlor, chicago, espacio, rosario, almirante, estudiantes, velez, almirante, independiente, river, estudiantes, boca, chicago]).
 
 % Ejercicio 1
-% S es valido solo si es una codificacion de un predicado del diccionario.
-
+%diccionario_lista(?S)
+% S es reversible pues diccionario(P) instancia P y
+% en string_codes(?P,?S) por lo menos uno de los argumentos debe estar
+% instanciado, en este caso P.
+%S es valido solo si es una codificacion
+% de un predicado del diccionario.
 diccionario_lista(S) :- diccionario(P), string_codes(P,S).
 
 % Ejercicio 2

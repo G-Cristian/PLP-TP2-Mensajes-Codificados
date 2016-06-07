@@ -43,15 +43,37 @@ diccionario_lista(S) :- diccionario(P), string_codes(P,S).
 % O el elemento resultante es la union del primer elemento de la lista, mas el J, mas el resultado
 % del predicado valido con un elemento menos.
 
-%juntar_con(?L,+J,?V)
+%juntar_con(?L,?J,?V)
 %L y V no pueden ser libres al mismo tiempo.
+%Si J está libre, V debe estar definida.
+% Si L es libre puede caer en el tercer caso. En este caso R no puede
+% ser libre por el nonvar(R). El append va a darle valor a XJ y a R2
+% basandose en R. El segundo append unifica X y J basandose en XJ,
+% donde J es un único elemento. Luego se llama a juntar_con(L1,J,R2) con
+% L1 libre y J y R2 unificadas. Por ultimo se llama a member con J y X
+% unificadas.
+%
+% Si R es libre cae en caso 2 cuando L no es libre. Ahora si J está
+% libre no se unifica ni J y XJ	contiene elementos libres en el primer
+% append, y en el segundo append R2 está libre y R tiene elementos
+% libres. Por último se llama a juntar_con con L1 definida, J libre y R2
+% libre. Esto se repite hasta caer en el caso base donde L está
+% definida, V se unifica y el not(memeber(J,V)) con J libre y V
+% unificada da false ya que existe una unificación.
+% En cambio si J está definida el primmer append unifica XJ y el segundo
+% deja a R2 sin unificar y a R con el elemento R2 sin unificar. Luego se
+% llama a juntar_con con L1 y J definidos y R2 sin unificar. Cuando se
+% llega al caso base se unifica V y se chequea el not(member(J,V)) pero
+% esta vez con J y V definidas. Es decir que puede dar true en cuyo caso
+% vuelve con la V unificada, lo cual va unificando a los R2 anteriores.
 juntar_con(L,J,V) :- length(L,1), member(V,L), not(member(J,V)).
 juntar_con([X|L1],J,R) :- var(R), nonvar(X), append(X,[J],XJ),append(XJ,R2,R),juntar_con(L1,J,R2).
 juntar_con([X|L1],J,R):-nonvar(R), append(XJ,R2,R),append(X,[J],XJ),juntar_con(L1,J,R2),not((member(J,X))).
 
 
 % Ejercicio 3
-
+%palabras(?S,?P)
+% No pueden ser las dos libres. Esto es por como funciona juntar_con.
 palabras(S,P) :- juntar_con(P,'espacio',S).
 
 
