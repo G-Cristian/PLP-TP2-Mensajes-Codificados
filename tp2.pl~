@@ -146,27 +146,10 @@ espacios_intercalados([S],[S]).
 espacios_intercalados([S|SS],[S,espacio|MS]):-espacios_intercalados(SS,MS).
 espacios_intercalados([S|SS],[S|MS]):-espacios_intercalados(SS,MS).
 
-
 %mensajes_mas_parejos(S,M)
-% mensajes_mas_parejos(S,M):- descifrar_sin_espacios(S,N1),
-% desviacion_estandar(N1,D1), not(descifar_sin_espacios(S,N2),
-% desviacion_estandar(N2,D2), D2<D1), member(N1,M).
-
-%desviacion_estandar().
-%desviacion_estandar():-
-
-%media_de_longitudes
-
-%cantidad_palabras:
-
-%mensajes_mas_parejos(+S,-M)
-% mensajes_mas_parejos(S,M):-desviaciones_estandars(S,DES),menor(DES,MDE),
-% descifrar_sin_espacios(S,M), desviacion_estandar(M,MDE).
-
-%desviaciones_estandars(+S,-DES)
-% desviaciones_estandars(S,[DE|DES]):-desviacion_estandar(M,DE),desviaciones_estandars(S,[DE|DES]).
-%
-
+mensajes_mas_parejos(S,M):- descifrar_sin_espacios(S,M),
+ desviacion_estandar_string(M,D1), not((descifrar_sin_espacios(S,N2),
+ desviacion_estandar_string(N2,D2), D2<D1)).
 
 
 %desviacion_estandar_string(+M,-DE)
@@ -177,7 +160,7 @@ desviacion_estandar_string(M,DE):-string_codes(M,N),juntar_con(P,32,N),desviacio
 %desviacion_estandar(+P,-DE)
 %P=[[simbolo/codigo,simbolo/codigo,...],[simbolo/codigo,...],...]
 %DE=float
-desviacion_estandar(P,DE):-media(P,M),sumatoria_cuadrado_diferencias(P,M,SCD), length(P,L), DIVISION is SCD/L, DE = sqrt(DIVISION).
+desviacion_estandar(P,DE):-media(P,M),sumatoria_cuadrado_diferencias(P,M,SCD), length(P,L), DIVISION is SCD/L, DE is sqrt(DIVISION).
 
 media(P,M):-sumatoria_longitudes(P,SL),length(P,L),M is SL/L.
 

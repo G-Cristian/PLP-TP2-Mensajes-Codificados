@@ -30,8 +30,12 @@ ej(3, [rombo, cuadrado, perro, cuadrado, sol, luna, triangulo, estrella, arbol, 
 tests_ej_8(1, [boca, racing, espacio, newells, boca, velez, boca, independiente, sarmiento, quilmes, racing, river, newells, sanlor, chicago, espacio, rosario, almirante, estudiantes, velez, almirante, independiente, river, estudiantes, boca, chicago]).
 
 % Ejercicio 1
-% S es valido solo si es una codificacion de un predicado del diccionario.
-
+%diccionario_lista(?S)
+% S es reversible pues diccionario(P) instancia P y
+% en string_codes(?P,?S) por lo menos uno de los argumentos debe estar
+% instanciado, en este caso P.
+%S es valido solo si es una codificacion
+% de un predicado del diccionario.
 diccionario_lista(S) :- diccionario(P), string_codes(P,S).
 
 % Ejercicio 2
@@ -146,31 +150,10 @@ espacios_intercalados([S],[S]).
 espacios_intercalados([S|SS],[S,espacio|MS]):-espacios_intercalados(SS,MS).
 espacios_intercalados([S|SS],[S|MS]):-espacios_intercalados(SS,MS).
 
-
-%mensajes_mas_parejos(S,M)
-% mensajes_mas_parejos(S,M):- descifrar_sin_espacios(S,N1),
-% desviacion_estandar(N1,D1), not(descifar_sin_espacios(S,N2),
-% desviacion_estandar(N2,D2), D2<D1), member(N1,M).
-
-%desviacion_estandar().
-%desviacion_estandar():-
-
-%media_de_longitudes
-
-%cantidad_palabras:
-
-%mensajes_mas_parejos(+S,-M)
-% mensajes_mas_parejos(S,M):-desviaciones_estandars(S,DES),menor(DES,MDE),
-% descifrar_sin_espacios(S,M), desviacion_estandar(M,MDE).
-
-%desviaciones_estandars(+S,-DES)
-% desviaciones_estandars(S,[DE|DES]):-desviacion_estandar(M,DE),desviaciones_estandars(S,[DE|DES]).
-%
-
 %mensajes_mas_parejos(S,M)
 mensajes_mas_parejos(S,M):- descifrar_sin_espacios(S,M),
- desviacion_estandar_string(M,D1), not(descifar_sin_espacios(S,N2),
- desviacion_estandar_string(N2,D2), D2<D1).
+ desviacion_estandar_string(M,D1), not((descifrar_sin_espacios(S,N2),
+ desviacion_estandar_string(N2,D2), D2<D1)).
 
 
 %desviacion_estandar_string(+M,-DE)
