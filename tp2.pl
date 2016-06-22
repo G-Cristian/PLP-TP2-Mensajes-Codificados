@@ -60,15 +60,16 @@ diccionario_lista(S) :- diccionario(P), string_codes(P,S).
 % libre. Esto se repite hasta caer en el caso base donde L está
 % definida, V se unifica y el not(memeber(J,V)) con J libre y V
 % unificada da false ya que existe una unificación.
-% En cambio si J está definida el primmer append unifica XJ y el segundo
+% En cambio si J está definida el primer append unifica XJ y el segundo
 % deja a R2 sin unificar y a R con el elemento R2 sin unificar. Luego se
 % llama a juntar_con con L1 y J definidos y R2 sin unificar. Cuando se
 % llega al caso base se unifica V y se chequea el not(member(J,V)) pero
 % esta vez con J y V definidas. Es decir que puede dar true en cuyo caso
 % vuelve con la V unificada, lo cual va unificando a los R2 anteriores.
-juntar_con(L,J,V) :- length(L,1), member(V,L), not(member(J,V)).
-juntar_con([X|L1],J,R) :- var(R), nonvar(X), append(X,[J],XJ),append(XJ,R2,R),juntar_con(L1,J,R2).
+juntar_con([L],_,L).
+juntar_con([X|L1],J,R) :- var(R), nonvar(X), juntar_con(L1,J,R2),append(X,[J|R2],R).
 juntar_con([X|L1],J,R):-nonvar(R), append(XJ,R2,R),append(X,[J],XJ),juntar_con(L1,J,R2),not((member(J,X))).
+
 
 
 % Ejercicio 3
@@ -81,16 +82,41 @@ palabras(S,P) :- juntar_con(P,'espacio',S).
 %Ejercicio 4
 
 %asignar_var(+A, +MI, -MF)
-asignar_var(A,[],[(A,X)]).
-asignar_var(A,MI,MI):- claves(MI,C), member(A,C),length(MI,N), N>0.
-asignar_var(A,MI,[(A,X)|MI]):- claves(MI,C), not(member(A,C)),length(MI,N), N>0.
+% asignar_var devuelve un diccionario al que cada clave le asigna una
+% variable nueva en caso de que la clave no exista.
+% Para ello revisa las claves que posee el diccionario de entrada, y en
+% caso de que no pertenezca le asigna una nueva variable.
+%El diccionario resultante puede no estar instanciado mientras si esten instanciadas A
+% o MI. Lo mismo ocurre con el diccionario inicial y la variable a
+% insertar, pueden no estar instanciada unariamente si las otras dos
+% variables si estan definidas. Esto ocurre porque el predicado
+% asignar_var utiliza los predicados claves y member. El primero
+% solamente saca la primer componente de cada uno de los elementos, y el
+% predicado member funciona con alguna de las variables no instanciadas.
+
+asignar_var(A,[],[(A,_)]).
+asignar_var(A,MI,MI):- claves(MI,C), member(A,C).
+asignar_var(A,MI,[(A,_)|MI]):- claves(MI,C), not(member(A,C)),length(MI,N), N>0.
 
 %claves(+L,-C)
 claves([],[]).
-claves([(A,N)|XS],[A|R]):- claves(XS,R).
+claves([(A,_)|XS],[A|R]):- claves(XS,R).
 
 %Ejercicio 5
 %palabras_con_variables(+P,-V)
+% Siendo P una lista de listas de atomos, instancia en V una lista de
+% listas de variables.
+% La idea de la solucion es armar un diccionario con las posibles
+% variables para cada palabra, y luego reemplazar esas variables
+% en la lista de lista de atomos.
+%Funciona con la lista de lista de variables no instanciadas y no a la inversa, la lista de lista de
+% atomos si debe estar instanciada. Esto ocurre porque el ultimo de los
+% predicados (reemplazar_palabras_con_variable) necesita que en el
+% diccionario que se arma (atomo-> variable) el atomo ya este
+% instanciado. Dejar la lista de lista de atomos sin instanciar no rompe
+% pero si "cuelga" por la infinidad de posibilidades de diccionarios que
+% pueden armarse.
+
 
 palabras_con_variables([],[]).
 palabras_con_variables([X|XS],[R|RS]):- aplanar([X|XS],LP), armarDic(LP,D), reemplazar_palabras_con_variable(D,[X|XS],[R|RS]).
@@ -116,45 +142,59 @@ dameVar([(X,A)|XS],Y,R):- X\=Y, dameVar(XS,Y,R).
 
 
 %Ejercicio 6
-%quitar(E,L,R)
-
-%quitar(_, [], []).
-%quitar(X, [X|Xs], Y) :- quitar(X, Xs, Y).
-%quitar(X, [T|Xs], [T|Y]) :- atomic(T), quitar(X, Xs, Y).
-% quitar(X, [T|Xs], [T|Y]) :- not(var(T)), not(var(X)),
-% string_codes([X],C1),string_codes([T],C2) ,C1\=C2 , quitar(X, Xs, Y).
-%quitar(X, [T|Xs], Y) :-  atomic(T), atomic(X),X==T , quitar(X, Xs, Y).
 
 %quitar(?E,+L,-R)
+% siendo E un atomo y L una lista de atomos, instancia en R el resultado
+% de quitar todas las apariciones de E en L.
+% La solucion consiste en recorrer todos los elementos y quitarlos de la
+% lista resultante en caso de que sean igual al parametro E.
+%L puede% contener elementos instanciados y no instanciados. E puede no estar
+% instanciado. Si E y R estan instanciados, L puede no estado, pero el
+% resultado es la misma lista que se instancia en R, como si la E nunca
+% hubiera pertenecido a la lista original. Si ninguna de las variables
+% esta instanciada devuelve una lista vacia tanto para L como para R.
+
+
 quitar(_,[],[]).
 quitar(E,[X|XS],R):-E==X,quitar(E,XS,R).
 quitar(E,[X|XS],[X|R]):-E\==X,quitar(E,XS,R).
 
 
 %Ejercicio 7
-%cant_distintos([],0).
-% cant_distintos([X|XS],R):- atomic(X), member(X,XS),
-% cant_distintos(XS,R).
-% cant_distintos([X|XS],R):- atomic(X), not(member(X,XS)),
-% cant_distintos(XS,R2), R is R2 + 1 .
-
 %cant_distintos(+L,-S)
+% siendo L una lista de atomos y variables, instancie en S la cantidad
+% de elementos distintos que contiene L.
+% Basicamente se empieza a recorrer la lista eliminando el primer
+% elemento de la cola y sumando uno al resultado a instanciar. Esto nos
+% asegura que el elemento no lo contaremos dos veces.
+%S puede estar instanciado o no. L debe estar instanciado para que tenga sentido. Si
+% S esta instanciado y L no, devuelve como primer resultado una lista de
+% longitud S, con S variables distintas. Si se le pide otro resultado
+% cuelga. Esto sucede porque el predicado cant_distintos usa el del item
+% 6 (quitar), con las tres variables no instanciadas, por lo que no
+% rompe, pero tampoco instancia nada, y la llamadas recursiva
+% cantidad_distintos devuelve una lista de variables no instanciadas de
+% longitud S - 1.
+
 cant_distintos([],0).
 cant_distintos([X|XS],S):-quitar(X,XS,L),cant_distintos(L,S2),S is S2+1.
 
 %Ejercicio 8
 %descifrar(+S,?M)
-% Primero armamos la lista con listas de variables libres usasndo
+% Primero armamos la lista con listas de variables libres usando
 % 'palabras(S,P), palabras_con_variables(P,V)'. Luego se recorren todas
 % las palabras del dicionario pasadas a codigo ascii usando
 % 'diccionario_lista(D)'. Finalmente se trata de unificar la primera
 % lista de V con la primer palabra de D y si unifican se sigue buscando
-% recursibamente.
+% recursivamente.
+% S debe estar instanciado y M puede o no estarlo.
+% Si S no se instancia el resultado es false, ya que palabras(S,P) con S
+% y P no instanciados ya devuelve false.
 
 descifrar(S,M):-palabras(S,P),palabras_con_variables(P,V),descifrar_palabras(V),juntar_con(V,32,N),simbolos_respetan_letras(S,N),string_codes(M,N).
 
 descifrar_palabras([]).
-descifrar_palabras([V|VS]):-diccionario_lista(D),V=D,descifrar_palabras(VS).
+descifrar_palabras([V|VS]):-diccionario_lista(V),descifrar_palabras(VS).
 
 simbolos_respetan_letras([],[]).
 simbolos_respetan_letras([S|SS],[N|NS]):-simbolo_es_misma_letra_siempre(S,N,SS,NS),simbolos_respetan_letras(SS,NS).
@@ -163,8 +203,15 @@ simbolo_es_misma_letra_siempre(_,_,[],[]).
 simbolo_es_misma_letra_siempre(S,L,[S2|SS],[L2|LS]):-S==S2,L==L2,simbolo_es_misma_letra_siempre(S,L,SS,LS).
 simbolo_es_misma_letra_siempre(S,L,[S2|SS],[L2|LS]):-S\==S2,L\==L2,simbolo_es_misma_letra_siempre(S,L,SS,LS).
 
-
+%EJERCICIO 9
 %descifrar_sin_espacios(+S, ?M)
+% La idea es ir metiendo espacios intercaladamente y luego utilizar el
+% predicado de descifrar.
+% Necesita que la lista de simbolos sin espacios este instanciada, de lo
+% contrario el llamado "cuelga".
+% M puede no estar instanciado.
+
+
 descifrar_sin_espacios(S, M):-espacios_intercalados(S,N),descifrar(N,M).
 
 %espacios_intercalados(+S,-M)
@@ -172,7 +219,13 @@ espacios_intercalados([S],[S]).
 espacios_intercalados([S|SS],[S,espacio|MS]):-espacios_intercalados(SS,MS).
 espacios_intercalados([S|SS],[S|MS]):-espacios_intercalados(SS,MS).
 
+%EJERCICIO 10
 %mensajes_mas_parejos(S,M)
+% La idea es armar un prredicado que indique que no hay un mensaje con
+% una desviacion estandar menor que el resultado.
+% Al usar el predicado del punto anterior la lista de simbolos debe
+% estar instanciada. El resultado M puede no estarlo
+
 mensajes_mas_parejos(S,M):- descifrar_sin_espacios(S,M),
  desviacion_estandar_string(M,D1), not((descifrar_sin_espacios(S,N2),
  desviacion_estandar_string(N2,D2), D2<D1)).
@@ -195,5 +248,16 @@ sumatoria_longitudes([P|PS],SL):-length(P,LP),sumatoria_longitudes(PS,SLS), SL i
 
 sumatoria_cuadrado_diferencias([],_,0).
 sumatoria_cuadrado_diferencias([P|PS],M,SCD):-length(P,LP), sumatoria_cuadrado_diferencias(PS,M,SCDS), DIF is LP - M, DIFSQ is DIF*DIF, SCD is DIFSQ + SCDS.
+
+
+
+
+
+
+
+
+
+
+
 
 
