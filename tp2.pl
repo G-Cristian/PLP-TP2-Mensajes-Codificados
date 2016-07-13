@@ -81,26 +81,34 @@ palabras(S,P) :- juntar_con(P,'espacio',S).
 
 %Ejercicio 4
 
-%asignar_var(+A, +MI, -MF)
+%asignar_var(?A, ?MI, ?MF)
 % asignar_var devuelve un diccionario al que cada clave le asigna una
 % variable nueva en caso de que la clave no exista.
 % Para ello revisa las claves que posee el diccionario de entrada, y en
 % caso de que no pertenezca le asigna una nueva variable.
-%El diccionario resultante puede no estar instanciado mientras si esten instanciadas A
-% o MI. Lo mismo ocurre con el diccionario inicial y la variable a
-% insertar, pueden no estar instanciada unariamente si las otras dos
-% variables si estan definidas. Esto ocurre porque el predicado
-% asignar_var utiliza los predicados claves y member. El primero
-% solamente saca la primer componente de cada uno de los elementos, y el
-% predicado member funciona con alguna de las variables no instanciadas.
+% Para obtener el resultados sin que se cuelgue, el diccionario
+% resultante puede no estar instanciado mientras si esté instanciada MI.
+% Si MI esta instanciada y A y MF no lo están, funciona porque se
+% estaría usando el member con MI instanciada por lo que el member
+% funciona bien. Si MF esta instanciada pasa lo mismo con los member. Si
+% MI y MF no estan instanciadas el primer member se queda iterando por
+% todas las listas que contengan a (A,_).
 
-asignar_var(A,[],[(A,_)]).
-asignar_var(A,MI,MI):- claves(MI,C), member(A,C).
-asignar_var(A,MI,[(A,_)|MI]):- claves(MI,C), not(member(A,C)),length(MI,N), N>0.
+asignar_var(A, MI, MI):- member((A,_), MI).
+asignar_var(A, MI,[(A,_)|MI]):- not(( member( (A,_), MI) )).
+
+%asignar_var(A,[],[(A,_)]).
+%asignar_var(A,[(A,V)|MI],[(A,V)|MI]).
+%asignar_var(A,[(B,V)|MI],[(B,V)|MF]):-asignar_var(A,MI,MF).
+
+%asignar_var(A,[],[(A,_)]).
+%asignar_var(A,MI,MI):- claves(MI,C), member(A,C).
+% asignar_var(A,MI,[(A,_)|MI]):- claves(MI,C),
+% not(member(A,C)),length(MI,N), N>0.
 
 %claves(+L,-C)
-claves([],[]).
-claves([(A,_)|XS],[A|R]):- claves(XS,R).
+%claves([],[]).
+%claves([(A,_)|XS],[A|R]):- claves(XS,R).
 
 %Ejercicio 5
 %palabras_con_variables(+P,-V)

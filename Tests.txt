@@ -47,12 +47,8 @@ M4=M5, M5=[(perro,_G3392),(cuadrado,_G3377),(rombo, _G3368)];
 false.
 
 asignar_var(b,[(c,_),(b,_),(a,_)],MF).
-1-A1<-b, [] != [(c,_),(b,_),(a,_)] MF1<-MF => false
-2-A2<-b, MI2<-[(c,_),(b,_),(a,_)], MF2<-[(c,_),(b,_),(a,_)] => claves(MI2,C2),member(A2,C2),length(MI2,N2), N2>0
-  C2<-[c,b,a] => member(b,[c,b,a]),length(MI2,N2), N2>0 => length(MI2,N2), N2>0
-    N2<-3 => N2>0 => true.
-3-A3<-b, MI3<-[(c,_),(b,_),(a,_)],MF3<-MF => claves(MI3,C3),not(member(A3,C3)),length(MI3,N3), N3>0
-  C3<-[c,b,a] => member(b,[c,b,a]),length(MI3,N3), N3>0 => false.
+1-A1<-b, MI <- [(c,_),(b,_),(a,_)] MF1<-MI si member((b,_),MI) => true
+2-A2<-b, MI2<-[(c,_),(b,_),(a,_)], MF2<-[(b,_) | (c,_),(b,_),(a,_)] si not ( member ((b,_), MI) ) => false
 
 5)palabras_con_variables(+P,-V)
 
