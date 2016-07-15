@@ -64,12 +64,38 @@ juntar_con([X|L1],J,R) :- juntar_con(L1,J,R2), append(X,[J|R2],R).
 palabras(S,P) :- separar_con(S, 'espacio', P).
 
 % separar_con(+LS, ?J, ?P)
-% LS debe estar instanciado para que el primer append no se cuelgue.
-% Al estar instanciado LS se instancia XS y R2 con el append. Luego
-% se instancia X y J. Luego se llama separar_con con el primer y segundo
-% parametro instanciado.
-separar_con(LS,J,P) :- length(P,1), member(LS,P), not(member(J,LS)).
-separar_con(LS,J,[X|P]):- append(XJ,R2,LS), append(X,[J],XJ),separar_con(R2,J,P),not((member(J,X))).
+% Si LS y P no esta instanciado el primer append va a buscar todas las
+% posibles listas por lo que nunca se termina de buscar.
+% Si P esta instanciado el primer append instancia LS y luego se llama a
+% separar_con con P2 instanciado. En algun punto P2 va a ser la lista
+% vacia por lo que al llamar a separar_con con P2 como lista vacía, se
+% cuelga el tercer separar_con ya que se vuelve a llamar a separar_con
+% con el tercer parametro como lista vacía.
+% Si LS está instanciado, se instancia X y R2 con
+% el append. Luego se llama separar_con con el primer parametro
+% instanciado.
+
+%Funcionamiento:
+% 1°_ si la lista es vacia no hay nada que separar entonces se devuelve
+% la lista vacia.
+% 2°_ Si es una palabra sin elemento separador, se devuelve una lista
+% con esa palabra. Notar que debe ser una palabra, es decir no puede ser
+% una lista vacia.
+%3°_ Si empiesa por el simbolo separador, se ignora ese
+% simbolo y se devuelve el resto separado por el simbolo 4°_ En otro
+% caso separa la primera palabra en forma de lsita por el simbolo
+% separador y la concatena con el resto separado por el simbolo
+% separador. Notar que antes verifica que la primera palabra obtenida no
+% contenga al simbolo separador y que no sea vacía.
+separar_con([],_,[]).
+separar_con(P,J,[P]):-length(P, L), L>0, not(( member(J, P) )).
+separar_con([J|LS], J, P):-separar_con(LS, J, P).
+separar_con(LS, J, [X|P2]):-append(X, [J|R2], LS), length(X, L), L > 0, not(( member(J,X) )), separar_con(R2, J, P2).
+
+
+%separar_con(LS,J,P) :- length(P,1), member(LS,P), not(member(J,LS)).
+% separar_con(LS,J,[X|P]):- append(XJ,R2,LS),
+% append(X,[J],XJ),separar_con(R2,J,P),not((member(J,X))).
 
 %Ejercicio 4
 
@@ -118,14 +144,14 @@ aplanar([X|XS],RS):- append(X,R,RS),aplanar(XS,R).
 armarDic([],[]).
 armarDic([X|XS],RS):- armarDic(XS,R),asignar_var(X,R,RS).
 
-reemplazarVar(D,[],[]).
+reemplazarVar(_,[],[]).
 reemplazarVar(D,[X|XS],[R|RS]):- dameVar(D,X,R), reemplazarVar(D,XS,RS).
 
 % quito el siguiente dameVar([],_,_) ya que si llega a ese caso tendría
 % que dar false
 %dameVar([],_,_).
-dameVar([(X,A)|XS],Y,A):- X==Y.
-dameVar([(X,A)|XS],Y,R):- X\=Y, dameVar(XS,Y,R).
+dameVar([(X,A)|_],Y,A):- X==Y.
+dameVar([(X,_)|XS],Y,R):- X\=Y, dameVar(XS,Y,R).
 
 
 %Ejercicio 6

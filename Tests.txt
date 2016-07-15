@@ -25,6 +25,18 @@ palabras([a,b,a,espacio,c,espacio,b,d,d,espacio,a,b,c,espacio,d],M).
 M = [[a, b, a], [c], [b, d, d], [a, b, c], [d]] ;
 false.
 
+palabras([espacio,a,b,a,espacio,espacio,espacio,c,espacio,b,d,d,espacio,a,b,c,espacio,espacio,d,espacio],M).
+M = [[a, b, a], [c], [b, d, d], [a, b, c], [d]] ;
+false.
+
+palabras([a,b,a,c,espacio,b,d,d,espacio,a,b,c,d,espacio,espacio],M).
+M = [[a, b, a, c], [b, d, d], [a, b, c, d]] ;
+false.
+
+palabras([espacio,espacio,a,b,a,c,espacio,b,d,d,espacio,c],M).
+M = [[a, b, a, c], [b, d, d], [c]] ;
+false.
+
 3.aux)
 separar_con([x,a,y,x,a,z],a,S).
 S = [[x], [y, x], [z]] ;
