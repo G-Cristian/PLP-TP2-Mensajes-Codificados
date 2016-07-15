@@ -1,32 +1,36 @@
-2)juntar_con(?L,?J,?V)
-L y V no pueden ser libres al mismo tiempo.
-Si J está libre, V debe estar definida.
+2)
+juntar_con([[x],[x,y],[z]],a, R).
+R = [x, a, x, y, a, z] ;
+false.
 
 juntar_con([[x],[y]],a,S).
 S = [x, a, y] ;
 false.
 
-juntar_con(S,A,[x,a,y,x,z]).
-S = [[], [a, y], [z]],
-A = x ;
-S = [[x], [y, x, z]],
-A = a ;
-S = [[x, a], [x, z]],
-A = y ;
-S = [[x, a, y, x], []],
-A = z ;
-false.
-
-juntar_con(S,a,[x,a,y,x,a,z]).
-S = [[x], [y, x], [z]] ;
+juntar_con([[x]],a,S).
+S = [x] ;
 false.
 
 juntar_con([[x],[y],[z]],a,[x,a,y,a,z]).
 true ;
 false.
 
-4) asignar_var(+A,+Mi,-MF).
+3)
+ej(1, S), palabras(S, P).
+S = [rombo, cuadrado, espacio, perro, cuadrado, sol, cuadrado],
+P = [[rombo, cuadrado], [perro, cuadrado, sol, cuadrado]] ;
+false.
 
+palabras([a,b,a,espacio,c,espacio,b,d,d,espacio,a,b,c,espacio,d],M).
+M = [[a, b, a], [c], [b, d, d], [a, b, c], [d]] ;
+false.
+
+3.aux)
+separar_con([x,a,y,x,a,z],a,S).
+S = [[x], [y, x], [z]] ;
+false.
+
+4)
 asignar_var(rombo,[],M).
 M=[(rombo, _G452)];
 false.
@@ -50,8 +54,7 @@ asignar_var(b,[(c,_),(b,_),(a,_)],MF).
 1-A1<-b, MI <- [(c,_),(b,_),(a,_)] MF1<-MI si member((b,_),MI) => true
 2-A2<-b, MI2<-[(c,_),(b,_),(a,_)], MF2<-[(b,_) | (c,_),(b,_),(a,_)] si not ( member ((b,_), MI) ) => false
 
-5)palabras_con_variables(+P,-V)
-
+5)
 ej(1, S), palabras(S, P), palabras_con_variables(P, V).
 S = [rombo, cuadrado, espacio, perro, cuadrado, sol, cuadrado],
 P = [[rombo, cuadrado], [perro, cuadrado, sol, cuadrado]],
@@ -65,8 +68,7 @@ palabras_con_variables([[rombo,rombo]|[[rombo,cuadrado,rombo]|[[cuadrado,rombo,p
 V = [[_G6001, _G6001], [_G6001, _G6016, _G6001], [_G6016, _G6001, _G5995]] ;
 false.
 
-6)quitar(?E,+L,-R)
-
+6)
 quitar(z,[A,B,A,z],L).
 L = [A, B, A] ;
 false.
@@ -87,8 +89,7 @@ L = [a, B, c, D].
 quitar(b,[a,B,c,D],L).
 L = [a, B, c, D].
 
-7)cant_distintos(+L,-S)
-
+7)
 cant_distintos([A,B,A], N).
 N=2;
 false.
@@ -103,4 +104,37 @@ false.
 
 cant_distintos([a,A,a,B,B,c,c,A,D,A,A], N).
 N=5;
+false.
+
+8)
+cargar("10000_formas.txt").
+tests_ej_8(1,S),descifrar(S,M).
+S = [boca, racing, espacio, newells, boca, velez, boca, independiente, sarmiento|...],
+M = "en determinados culturales" ;
+false.
+
+cargar("dicc0.txt").
+ej(1, S), descifrar(S, M).
+S = [rombo, cuadrado, espacio, perro, cuadrado, sol, cuadrado],
+M = "la casa" ;
+false.
+
+9)
+cargar("dicc1.txt").
+ej(3, S), descifrar_sin_espacios(S, M).
+S = [rombo, cuadrado, perro, cuadrado, sol, luna, triangulo, estrella, arbol|...],
+M = "casa de flor" ;
+S = [rombo, cuadrado, perro, cuadrado, sol, luna, triangulo, estrella, arbol|...],
+M = "casa flor de" ;
+S = [rombo, cuadrado, perro, cuadrado, sol, luna, triangulo, estrella, arbol|...],
+M = "casa miento" ;
+false.
+
+10)
+cargar("dicc1.txt").
+ej(3, S), mensajes_mas_parejos(S, M).
+S = [rombo, cuadrado, perro, cuadrado, sol, luna, triangulo, estrella, arbol|...],
+M = "casa de flor" ;
+S = [rombo, cuadrado, perro, cuadrado, sol, luna, triangulo, estrella, arbol|...],
+M = "casa flor de" ;
 false.

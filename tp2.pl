@@ -43,41 +43,33 @@ diccionario_lista(S) :- diccionario(P), string_codes(P,S).
 % O el elemento resultante es la union del primer elemento de la lista, mas el J, mas el resultado
 % del predicado valido con un elemento menos.
 
-%juntar_con(?L,?J,?V)
-%L y V no pueden ser libres al mismo tiempo.
-%Si J está libre, V debe estar definida.
-% Si L es libre puede caer en el tercer caso. En este caso R no puede
-% ser libre por el nonvar(R). El append va a darle valor a XJ y a R2
-% basandose en R. El segundo append unifica X y J basandose en XJ,
-% donde J es un único elemento. Luego se llama a juntar_con(L1,J,R2) con
-% L1 libre y J y R2 unificadas. Por ultimo se llama a member con J y X
-% unificadas.
-%
-% Si R es libre cae en caso 2 cuando L no es libre. Ahora si J está
-% libre no se unifica ni J y XJ	contiene elementos libres en el primer
-% append, y en el segundo append R2 está libre y R tiene elementos
-% libres. Por último se llama a juntar_con con L1 definida, J libre y R2
-% libre. Esto se repite hasta caer en el caso base donde L está
-% definida, V se unifica y el not(memeber(J,V)) con J libre y V
-% unificada da false ya que existe una unificación.
-% En cambio si J está definida el primer append unifica XJ y el segundo
-% deja a R2 sin unificar y a R con el elemento R2 sin unificar. Luego se
-% llama a juntar_con con L1 y J definidos y R2 sin unificar. Cuando se
-% llega al caso base se unifica V y se chequea el not(member(J,V)) pero
-% esta vez con J y V definidas. Es decir que puede dar true en cuyo caso
-% vuelve con la V unificada, lo cual va unificando a los R2 anteriores.
+%juntar_con(+L,?J,?V)
+% Si ninguna está instanciado, al llegar al append se generan infinitas
+% listas.
+% Si solo V está definida, en el segundo juntar_con se llama a juntar_con
+% con L1, J y R2 sin definir. Este juntar con va a devolver infinitas
+% soluciones, pero en el momento en que R2 sea más largo que R, el
+% append va a dar falso, por lo que sigue buscando con juntar_con hasta
+% quedarse sin stack.
+% Si L está instanciado, juntar_con se llama siempre con el primer
+% parametro instanciado. Al llegar al caso vase se intancia el tercer
+% parametro y luego se llama a append con X y R2 instanciados por lo que
+% instancia R.
 juntar_con([L],_,L).
-juntar_con([X|L1],J,R) :- var(R), nonvar(X), juntar_con(L1,J,R2),append(X,[J|R2],R).
-juntar_con([X|L1],J,R):-nonvar(R), append(XJ,R2,R),append(X,[J],XJ),juntar_con(L1,J,R2),not((member(J,X))).
-
-
+juntar_con([X|L1],J,R) :- juntar_con(L1,J,R2), append(X,[J|R2],R).
 
 % Ejercicio 3
-%palabras(?S,?P)
-% No pueden ser las dos libres. Esto es por como funciona juntar_con.
-palabras(S,P) :- juntar_con(P,'espacio',S).
+%palabras(+S,?P)
+% S debe estar instanciado por como funciona separa_con
+palabras(S,P) :- separar_con(S, 'espacio', P).
 
-
+% separar_con(+LS, ?J, ?P)
+% LS debe estar instanciado para que el primer append no se cuelgue.
+% Al estar instanciado LS se instancia XS y R2 con el append. Luego
+% se instancia X y J. Luego se llama separar_con con el primer y segundo
+% parametro instanciado.
+separar_con(LS,J,P) :- length(P,1), member(LS,P), not(member(J,LS)).
+separar_con(LS,J,[X|P]):- append(XJ,R2,LS), append(X,[J],XJ),separar_con(R2,J,P),not((member(J,X))).
 
 %Ejercicio 4
 
@@ -96,19 +88,6 @@ palabras(S,P) :- juntar_con(P,'espacio',S).
 
 asignar_var(A, MI, MI):- member((A,_), MI).
 asignar_var(A, MI,[(A,_)|MI]):- not(( member( (A,_), MI) )).
-
-%asignar_var(A,[],[(A,_)]).
-%asignar_var(A,[(A,V)|MI],[(A,V)|MI]).
-%asignar_var(A,[(B,V)|MI],[(B,V)|MF]):-asignar_var(A,MI,MF).
-
-%asignar_var(A,[],[(A,_)]).
-%asignar_var(A,MI,MI):- claves(MI,C), member(A,C).
-% asignar_var(A,MI,[(A,_)|MI]):- claves(MI,C),
-% not(member(A,C)),length(MI,N), N>0.
-
-%claves(+L,-C)
-%claves([],[]).
-%claves([(A,_)|XS],[A|R]):- claves(XS,R).
 
 %Ejercicio 5
 %palabras_con_variables(+P,-V)
@@ -242,7 +221,7 @@ mensajes_mas_parejos(S,M):- descifrar_sin_espacios(S,M),
 %desviacion_estandar_string(+M,-DE)
 %M=string
 %DE=float
-desviacion_estandar_string(M,DE):-string_codes(M,N),juntar_con(P,32,N),desviacion_estandar(P,DE).
+desviacion_estandar_string(M,DE):-string_codes(M,N),separar_con(N,32,P),desviacion_estandar(P,DE).
 
 %desviacion_estandar(+P,-DE)
 %P=[[simbolo/codigo,simbolo/codigo,...],[simbolo/codigo,...],...]
